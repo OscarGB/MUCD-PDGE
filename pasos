@@ -1,0 +1,37 @@
+Hemos descargado el material de Moodle
+
+Parte 2: Repaso
+
+Ejecutamos los comandos:
+
+hdfs dfs -mkdir /user/bigdata/entrada_cabana_gomez
+
+hdfs dfs -copyFromLocal quijote.txt /user/bigdata/entrada_cabana_gomez/datos.txt
+
+hadoop jar /opt/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-examples-2.8.1.jar wordcount /user/bigdata/entrada_cabana_gomez/datos.txt /user/bigdata/salida_cabana_gomez
+
+hdfs dfs -get /user/bigdata/salida_cabana_gomez/
+
+Obtenemos el directorio salida_cabana_gomez, que renombraremos como salida_cabana_gomez_repaso
+
+mv salida_cabana_gomez/ salida_cabana_gomez_repaso/
+
+Borramos el fichero de hdfs con
+
+hdfs dfs -rm -r /user/bigdata/salida_cabana_gomez
+
+Parte 3: Ejercicio
+
+Modificamos el .java añadiendo separadores en el StringTokenizer para que lo elimine y añadiendo el toLowerCase() en el token para pasarlo todo a minúsculas.
+
+Corremos los comandos:
+
+./compilar.sh WordCount
+
+hadoop jar WordCount.jar uam.WordCount /user/bigdata/entrada_cabana_gomez/datos.txt /user/bigdata/salida_cabana_gomez
+
+De igual manera obtenemos el resultado obteniendo mediante:
+
+hdfs dfs -get /user/bigdata/salida_cabana_gomez/
+mv salida_cabana_gomez salida_cabana_gomez_ejercicio
+
