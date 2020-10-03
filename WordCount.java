@@ -18,9 +18,9 @@ public class WordCount {
     private Text word = new Text();
       
     public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
-      StringTokenizer itr = new StringTokenizer(value.toString());
+      StringTokenizer itr = new StringTokenizer(value.toString(),"\n .,:;¡¿!?()[]{}\'\"><");
       while (itr.hasMoreTokens()) {
-        word.set(itr.nextToken());
+        word.set(itr.nextToken().toLowerCase());
         context.write(word, one);
       }
     }
