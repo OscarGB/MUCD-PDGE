@@ -35,3 +35,13 @@ De igual manera obtenemos el resultado obteniendo mediante:
 hdfs dfs -get /user/bigdata/salida_cabana_gomez/
 mv salida_cabana_gomez salida_cabana_gomez_ejercicio
 
+Para lo nuestro
+
+hdfs dfs -copyFromLocal datos_tiempos.txt /user/bigdata/entrada_cabana_gomez2/datos.txt
+
+hadoop jar Describe.jar uam.Describe /user/bigdata/entrada_cabana_gomez2/datos.txt /user/bigdata/salida_cabana_gomez2
+
+hdfs dfs -get /user/bigdata/salida_cabana_gomez2/
+
+mv salida_cabana_gomez2 salida_cabana_gomez_tiempos
+s
