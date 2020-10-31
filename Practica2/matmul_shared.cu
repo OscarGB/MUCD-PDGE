@@ -1,5 +1,6 @@
 #include <stdio.h>
 #define N 16
+#define BLOCK_SIZE 32 < N ? 32 : N
 void matrixMultCPU(int a[N][N], int b[N][N], int c[N][N]) {
 	int n,m;
 	for (int i = 0; i < N; i++) {
@@ -20,10 +21,23 @@ __global__ void matrixMultGPU(int *a, int *b, int *c) {
 	int k, sum = 0;
 	int col = threadIdx.x + blockDim.x * blockIdx.x;
 	int fil = threadIdx.y + blockDim.y * blockIdx.y;
+
+	__shared__ float A[BLOCK_SIZE][N];
+	__shared__ float B[BLOCK_SIZE][N];
+
+	for (int i = threadIdx.x; i < N; i+=blockDim.x){
+		A[threadIdx.y][i] = a[fil*N + i];
+	}
+	for (int i = threadIdx.y; i < N; i+=blockDim.y){
+		B[threadIdx.x][i] = b[i*N + col];
+	}
+	
+	__syncthreads();
+
 	if (col < N && fil < N) {
 		// #pragma unroll
 		for (k = 0; k < N; k++) {
-			sum += a[fil * N + k] * b[k * N + col];
+			sum += A[threadIdx.y][k] * B[threadIdx.x][k];
 		}
 		c[fil * N + col] = sum;
 	}
@@ -53,7 +67,7 @@ int main() {
 	cudaMemcpy(dev_b, b, size, cudaMemcpyHostToDevice);
 
 	dim3 dimGrid((N+32-1)/32, (N+32-1)/32);
-	dim3 dimBlock(32 < N ? 32 : N, 32 < N ? 32 : N);
+	dim3 dimBlock(BLOCK_SIZE, BLOCK_SIZE);
 
   	// Allocate CUDA events that we'll use for timing
 	cudaEvent_t start;
